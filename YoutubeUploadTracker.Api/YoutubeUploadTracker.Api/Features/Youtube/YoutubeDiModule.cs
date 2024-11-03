@@ -22,6 +22,7 @@ internal static class YoutubeDiModule
         });
 
         serviceCollection.AddScoped<YoutubeChannelRegistrationService>();
+        serviceCollection.AddScoped<YoutubeChannelService>();
 
         return serviceCollection;
     }
