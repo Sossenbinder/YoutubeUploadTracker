@@ -10,7 +10,7 @@ internal static class CommonDiModule
     {
         serviceCollection.AddDbContext<YoutubeUploadTrackerDbContext>(options =>
         {
-            var settings = configuration.GetSection(ConfigSections.Postgresql).Get<PostgresqlSettings>();
+            var settings = configuration.GetSection(PostgresqlSettings.ConfigSection).Get<PostgresqlSettings>();
             options.UseNpgsql(settings!.ConnectionString);
         });
         

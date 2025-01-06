@@ -1,0 +1,1 @@
+openssl req -x509 -nodes -days 1825 -newkey rsa:2048 -keyout cert.key -out cert.crt -addext "subjectAltName=DNS:yut.local.com"

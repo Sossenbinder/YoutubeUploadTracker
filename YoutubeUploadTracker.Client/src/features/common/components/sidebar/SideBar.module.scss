@@ -1,0 +1,26 @@
+.tree-subtree {
+  > li {
+    margin: 10px 0;
+
+    &:hover {
+      transition: all 0.2s ease-in-out;
+      margin-left: 5px;
+      border-radius: 5px;
+      @include mantine.light {
+        color: var(--mantine-color-black);
+      }
+
+      @include mantine.dark {
+        color: var(--mantine-color-white);
+      }
+    }
+
+    .activePath {
+      margin-left: 2px;
+      border-radius: 5px;
+
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+  }
+}

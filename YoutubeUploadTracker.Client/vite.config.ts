@@ -3,15 +3,34 @@ import { defineConfig } from "vite";
 import vike from "vike/plugin";
 import path from "path";
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      "@root": __dirname,
-      "@components": path.resolve(__dirname, "./components"),
-      "@common": path.resolve(__dirname, "./common"),
-      "@pages": path.resolve(__dirname, "./pages"),
+export default defineConfig(({ mode }) => {
+  if (mode === "development") {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  }
+
+  return {
+    resolve: {
+      alias: {
+        "@root": __dirname,
+        "@features": path.resolve(__dirname, "./src/features"),
+        "@auth": path.resolve(__dirname, "./src/features/auth"),
+        "@common": path.resolve(__dirname, "./src/common"),
+        "@pages": path.resolve(__dirname, "./src/pages"),
+      },
     },
-    extensions: [".js", ".ts", ".jsx", ".tsx"], // Include '.tsx' here
-  },
-  plugins: [vike({}), react({})],
+    plugins: [react(), vike()],
+    server: {
+      host: "0.0.0.0",
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler",
+          additionalData: `@use "${path
+            .join(process.cwd(), "src/_mantine")
+            .replace(/\\/g, "/")}" as mantine;`,
+        },
+      },
+    },
+  };
 });

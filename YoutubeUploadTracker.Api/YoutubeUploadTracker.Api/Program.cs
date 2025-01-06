@@ -1,9 +1,9 @@
 using Asp.Versioning;
-using Asp.Versioning.Conventions;
 using YoutubeUploadTracker.Api.Features.Common;
+using YoutubeUploadTracker.Api.Features.Common.Auth;
 using YoutubeUploadTracker.Api.Features.Youtube;
-using YoutubeUploadTracker.Api.Features.Youtube.Api;
 using YoutubeUploadTracker.Api.Infrastructure.BackgroundServices;
+using YoutubeUploadTracker.Api.Infrastructure.Hangfire;
 using YoutubeUploadTracker.Api.Infrastructure.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,20 +13,16 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddJsonFile("appsettings.local.json", true);
 }
 
-builder.Logging.AddCustomSerilog(builder.Configuration, builder.Environment);
-
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHostedService<EfMigrationService>();
 
-builder.Services
-    .RegisterCommonFunctionality(builder.Configuration)
-    .RegisterYoutube(builder.Configuration);
+RegisterCustomServices();
 
 builder.Services.AddApiVersioning(x =>
 {
-    x.DefaultApiVersion = new ApiVersion(1);
+    x.DefaultApiVersion = new(1);
     x.ReportApiVersions = true;
     x.AssumeDefaultVersionWhenUnspecified = true;
     x.ApiVersionReader = ApiVersionReader.Combine(
@@ -34,13 +30,22 @@ builder.Services.AddApiVersioning(x =>
         new HeaderApiVersionReader("X-Api-Version"));
 });
 
+builder.Services.AddCors(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        options.AddDefaultPolicy(corsPolicyBuilder =>
+        {
+            corsPolicyBuilder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    }
+});
+
 var app = builder.Build();
 
-var versionSet = app.NewApiVersionSet()
-    .HasApiVersion(1.0)
-    .HasApiVersion(2.0)
-    .ReportApiVersions()
-    .Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -49,13 +54,48 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+RegisterAppExtensions();
+
 app.UseHttpsRedirection();
 
+app.UseCookiePolicy(new()
+{
+    MinimumSameSitePolicy = SameSiteMode.Lax
+});
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UsePathBase(new PathString("/api"));
-
-app.MapControllers();
-app.MapYoutubeChannelEndpoints(versionSet);
+app.UseCors();
 
 app.Run();
+return;
+
+void RegisterCustomServices()
+{
+    builder.Logging.AddCustomSerilog(builder.Configuration, builder.Environment);
+
+    builder.Services.AddHostedService<EfMigrationService>();
+
+    builder.Services
+        .RegisterCustomAuth(builder.Configuration)
+        .RegisterCommonFunctionality(builder.Configuration)
+        .RegisterYoutube(builder.Configuration);
+
+    builder.Services.AddCloudHangFire(builder.Configuration);
+}
+
+void RegisterAppExtensions()
+{
+    app.AddHangfireDashboard();
+    SetupEndpoints();
+}
+
+void SetupEndpoints()
+{
+    app.MapControllers();
+
+    app.MapGroup("/api")
+        .MapYoutubeEndpoints()
+        .MapAuthenticationEndpoints(app.Services);
+}
