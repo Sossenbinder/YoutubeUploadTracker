@@ -3,6 +3,7 @@ import { Channel } from "../../types";
 import ChannelGalleryItem from "./ChannelGalleryItem";
 import SuggestChannelImport from "./SuggestChannelImport";
 import { useRef, useState } from "react";
+import { httpGet } from "@root/src/features/common/utils/requests";
 
 export type Props = {
   injectedChannels: Channel[];
@@ -18,7 +19,9 @@ export default function ChannelOverview({ injectedChannels }: Props) {
 
   const updateNameQuery = (value?: string) => {
     clearTimeout(updateTimeoutRef.current);
-    updateTimeoutRef.current = setTimeout(() => {}, 500);
+    updateTimeoutRef.current = setTimeout(() => {
+		const filteredChannels = await httpGet<
+	}, 500);
 
     setNameQuery(value ?? "");
   };
