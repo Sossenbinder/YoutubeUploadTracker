@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using YoutubeUploadTracker.Api.Features.Common.Auth.Session.Models;
 using YoutubeUploadTracker.Api.Features.Youtube.Channels.Api.Models;
+using YoutubeUploadTracker.Api.Features.Youtube.Channels.Model;
 using YoutubeUploadTracker.Api.Features.Youtube.Channels.Service;
 
 namespace YoutubeUploadTracker.Api.Features.Youtube.Channels.Api;

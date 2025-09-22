@@ -7,6 +7,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{BC346256-8
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{CA88C2D1-A520-427F-B859-5C173CE92599}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\caddy\certs\generateCert.ps1 = scripts\caddy\certs\generateCert.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "caddy", "caddy", "{D05C5DB4-241A-45E4-B647-D84DA949C38E}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\caddy\Caddyfile = scripts\caddy\Caddyfile
+		scripts\caddy\certs\cert.crt = scripts\caddy\certs\cert.crt
+		scripts\caddy\certs\cert.key = scripts\caddy\certs\cert.key
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +29,9 @@ Global
 		{65A03A74-FC0C-46EC-AC4F-251BB9AEE024}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65A03A74-FC0C-46EC-AC4F-251BB9AEE024}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65A03A74-FC0C-46EC-AC4F-251BB9AEE024}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA88C2D1-A520-427F-B859-5C173CE92599} = {BC346256-8C5B-4AB7-9F41-E45B430749AF}
+		{D05C5DB4-241A-45E4-B647-D84DA949C38E} = {CA88C2D1-A520-427F-B859-5C173CE92599}
 	EndGlobalSection
 EndGlobal

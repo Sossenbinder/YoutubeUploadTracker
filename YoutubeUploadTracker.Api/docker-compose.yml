@@ -4,7 +4,10 @@ name: youtube_upload_tracker
 volumes:
   seqdata: { }
   postgresqldata: { }
-  
+  caddy_data:
+  caddy_config:
+
+
 networks:
   youtube-upload-tracker-network: { }
 
@@ -30,8 +33,21 @@ services:
       - "5392:5341"
     environment:
       ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
     volumes:
       - seqdata:/data
     networks:
       - youtube-upload-tracker-network
+    restart: unless-stopped
+
+  caddy:
+    image: caddy
+    ports:
+      - "2000:443"
+      - "1999:80"
+    volumes:
+      - ./scripts/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./scripts/caddy/certs:/etc/caddy/certs
+      - caddy_data:/data
+      - caddy_config:/config
     restart: unless-stopped

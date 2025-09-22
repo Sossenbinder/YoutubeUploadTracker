@@ -20,8 +20,8 @@ export default function ChannelOverview({ injectedChannels }: Props) {
   const updateNameQuery = (value?: string) => {
     clearTimeout(updateTimeoutRef.current);
     updateTimeoutRef.current = setTimeout(() => {
-		const filteredChannels = await httpGet<
-	}, 500);
+      //const filteredChannels = await httpGet<
+    }, 500);
 
     setNameQuery(value ?? "");
   };
